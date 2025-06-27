@@ -5,7 +5,7 @@ public class CuentaBancaria {
     private int ID;
     private String nombre;
     private String apellido;
-    private Double saldoInicial = 0.00;
+    private Double saldoInicial;
     private Double limite;
 
     // Constructor
@@ -55,13 +55,15 @@ public class CuentaBancaria {
     //Metodos
 
     public void depositar(Double valor) {
-
-        this.saldoInicial += valor;
-
+        if (valor > 0) {
+            this.saldoInicial += valor;
+        } else {
+            System.out.println("No se puede depositar un monto negativo.");
+        }
     }
 
     public boolean retirar(Double valor) {
-        if (valor - saldoInicial >= -limite) {
+        if (saldoInicial - valor >= -limite) {
 
             this.saldoInicial -= valor;
             return true;
@@ -75,17 +77,25 @@ public class CuentaBancaria {
     }
 
 
-    public boolean transferencia(Double valor, int ID) {
-        if (saldoInicial - valor  >= -limite) {
-
+    public boolean transferencia(Double valor, CuentaBancaria destino) {
+        if (saldoInicial - valor >= -limite) {
             this.saldoInicial -= valor;
+            destino.depositar(valor);
             return true;
-
         } else {
-
-            return false; // no se pudo extraer
-
+            return false;
         }
+    }
+
+    public boolean tieneFondosSuficientes(Double valor) {
+        return saldoInicial - valor >= -limite;
+    }
+
+    public String obtenerInformacionCuenta (){
+
+        return "Titular: " + nombre + " " + apellido + " Saldo: " + saldoInicial + " Limite: " + limite;
 
     }
+
+
 }
